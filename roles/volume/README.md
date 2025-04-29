@@ -44,6 +44,7 @@ The role uses the following variables:
 | `unix_permissions`      | omit    | for module variable `unix_permissions`      |
 | `volume_security_style` | omit    | for module variable `volume_security_style` |
 | `wait_for_completion`   | true    | for module variable `wait_for_completion`   |
+| `snapshot_auto_delete`  | true    | for module variable `snapshot_auto_delete`  |
 
 **clone.yml**
 

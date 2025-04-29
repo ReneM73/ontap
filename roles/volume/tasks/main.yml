@@ -25,6 +25,7 @@
     size: "{{ size | default(omit) }}"
     size_unit: "{{ size_unit | default('gb') }}"
     snapdir_access: "{{ snapdir_access | default(omit) }}"
+    snapshot_auto_delete: "{{ snapshot_auto_delete | default(omit) }}"
     snapshot_policy: "{{ snapshot_policy | default(omit) }}"
     space_guarantee: "{{ space_guarantee | default(omit) }}"
     unix_permissions: "{{ unix_permissions | default(omit) }}"
