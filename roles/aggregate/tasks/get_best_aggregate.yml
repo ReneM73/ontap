@@ -1,0 +1,22 @@
+---
+- name: Execute REST Info Module
+  ansible.builtin.include_role:
+    name: sgs.ontap.rest
+    tasks_from: info.yml
+  vars:
+    gather_subset: storage/aggregates
+    fields:
+      - space
+      - volume_count
+    result_var: aggregate_info
+
+- name: Loop over aggregate
+  ansible.builtin.include_tasks:
+    file: get_best_aggregate_loop.yml
+  loop: "{{ aggregate_info.ontap_info.storage_aggregates.records }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Set best aggregate
+  ansible.builtin.set_fact:
+    best_aggregate: "{{ (aggregate_rating_table | max(attribute='rating')).name }}"

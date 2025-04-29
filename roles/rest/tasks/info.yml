@@ -1,0 +1,24 @@
+---
+- name: Execute NA_ONTAP_REST_INFO
+  delegate_to: localhost
+  netapp.ontap.na_ontap_rest_info:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    # Optional fields
+    fields: "{{ fields | default(omit) }}"
+    gather_subset: "{{ gather_subset | default(omit) }}"
+    owning_resource: "{{ owning_resource | default(omit) }}"
+    parameters: "{{ parameters | default(omit) }}"
+    use_python_keys: "{{ use_python_keys | default(true) }}"
+  register: rest_info_result
+
+- name: Set result in custom variable
+  ansible.builtin.set_fact:
+    "{{ result_var }}": "{{ rest_info_result }}"
+  when:
+    result_var is defined

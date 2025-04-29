@@ -1,0 +1,22 @@
+---
+- name: Execute ONTAP_LUN
+  delegate_to: localhost
+  netapp.ontap.na_ontap_lun:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    state: "{{ state | default('present') }}"
+    vserver: "{{ vserver }}"
+    flexvol_name: "{{ flexvol_name }}"
+    name: "{{ name }}"
+    size: "{{ size }}"
+    size_unit: "{{ size_unit |default('gb') }}"
+    # Optional fields
+    os_type: "{{ os_type |default(omit) }}"
+    qtree_name: "{{ qtree_name |default(omit) }}"
+    space_allocation: "{{ space_allocation |default(omit) }}"
+    space_reserve: "{{ space_reserve |default(omit) }}"

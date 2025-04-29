@@ -1,0 +1,23 @@
+---
+- name: Execute NA_ONTAP_REST_CLI
+  delegate_to: localhost
+  netapp.ontap.na_ontap_rest_cli:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    command: "{{ command }}"
+    verb: "{{ verb }}"
+    # Optional fields
+    body: "{{ body | default(omit) }}"
+    params: "{{ params | default(omit) }}"
+  register: rest_info_result
+
+- name: Set result in custom variable
+  ansible.builtin.set_fact:
+    "{{ result_var }}": "{{ rest_info_result }}"
+  when:
+    result_var is defined

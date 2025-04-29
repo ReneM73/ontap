@@ -1,0 +1,18 @@
+---
+- name: Hello World
+  sgs.core.hello_world:
+    name: "Swatch Group Services"
+  register: result
+
+- name: Split result
+  ansible.builtin.set_fact:
+    hello_str: "{{ result.fact.split(' ')[0] }}"
+    hello_name: "{{ result.fact.split(' ')[1:] | join(' ') }}"
+
+- name: Assert result is not changed
+  ansible.builtin.assert: 
+    that: 
+      - not result.changed
+      - hello_str in hello_str_choices
+      - hello_name == 'Swatch Group Services!'
+      

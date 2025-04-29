@@ -1,0 +1,12 @@
+# This file describe ansible-lint configuration
+# Documentation available here: https://ansible-lint.readthedocs.io/configuring/#ansible-lint-configuration
+---
+profile: production # Ansible-lint profiles gradually increase the strictness of rules
+offline: true # Disable installation of requirements.yml and schema refreshing
+strict: true # Return non-zero exit code on warnings as well as errors
+skip_list: # Only check rules whose id/tags do not match these values.
+  - yaml[line-length]
+  - name[template]
+  - run-once[task]
+  - var-naming[no-role-prefix] # We are using a different naming convention at SGS. Role variables should be prefixed with `rl_<role_name>_` instead of `<role_name>_`
+  - package-latest

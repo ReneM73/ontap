@@ -1,0 +1,164 @@
+---
+name: ansible_collection
+
+pool:
+  name: Orchestration
+
+trigger:
+  branches:
+    include:
+      - "*"
+  tags:
+    include:
+      - "*.*.*"
+
+pr:
+  branches:
+    include:
+      - "*"
+
+variables:
+  - group: "ansible-integration-group"
+  - name: checkoutPath
+    value: ansible_collections/sgs/ontap
+
+stages:
+  - stage: init
+    displayName: Initialize
+    jobs:
+      - job: validate
+        displayName: "Validate requirements"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - checkout: self
+            path: $(checkoutPath)
+          - script: |
+              git_tag=$(Build.SourceBranchName)
+              galaxy_version=$(grep 'version:' galaxy.yml | cut -d ' ' -f 2)
+              if [ "$git_tag" = "$galaxy_version" ]; then
+                echo "The git tag is equal to the version in the galaxy.yml file."
+              else
+                echo "The git tag is not equal to the version in the galaxy.yml file."
+                exit 1
+              fi
+            displayName: "Check Collection version"
+            condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+
+  - stage: quality
+    displayName: Quality
+    dependsOn: init
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - job: lint
+        displayName: "Run lint tests"
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.12"
+              addToPath: true
+              architecture: "x64"
+            displayName: "Use Python 3.12"
+          - checkout: self
+            path: $(checkoutPath)
+          - script: |
+              pip install poetry
+              poetry install
+            displayName: "Install dependencies"
+          - script: |
+              poetry run nox -s black
+            displayName: "Lint checks"
+          - script: |
+              poetry run nox -s sanity
+              # poetry run ansible-test sanity -v --docker --python $(python.version)
+            displayName: "Sanity checks"
+      - job: unit
+        displayName: "Run unit tests"
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.12"
+              addToPath: true
+              architecture: "x64"
+            displayName: "Use Python 3.12"
+          - task: UseDotNet@2
+            inputs:
+              packageType: "sdk"
+          - checkout: self
+            path: $(checkoutPath)
+          - script: |
+              pip install poetry
+              poetry install
+            displayName: "Install dependencies"
+          - script: |
+              poetry run nox -s units
+              # poetry run ansible-test units -v --docker --coverage --python $(python.version)
+            displayName: "Quality checks"
+          - task: PublishTestResults@2
+            condition: succeededOrFailed()
+            inputs:
+              testRunTitle: "Ansible sgs.core unit tests"
+              mergeTestResults: true
+              testResultsFiles: "$(System.DefaultWorkingDirectory)/tests/output/junit/python*.xml"
+          - script: |
+              poetry run nox -s coverage
+            displayName: "Coverage"
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              summaryFileLocation: "$(System.DefaultWorkingDirectory)/tests/output/reports/coverage.xml"
+              failIfCoverageEmpty: true
+            displayName: "Publish coverage report"
+          # No integration tests for now.
+          # This should be in another stage
+          # - script: |
+          #     ./tests/utils/render.sh tests/integration/integration_config.yml.template > tests/integration/integration_config.yml
+          #     ansible-test integration --docker -v
+          #   env:
+          #     WFHUB_TOKEN: $(_wfhub_token)
+          #     NETAPP_KPI_DB_PASSWORD: $(_kpi_db_password)
+          #   displayName: "Integration test"
+
+  - stage: sast
+    dependsOn: init
+    displayName: "Static Application Security Testing"
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - job: advanced_security
+        displayName: "Github Advanced Security"
+        steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.12"
+              addToPath: true
+              architecture: "x64"
+            displayName: "Use Python 3.12"
+
+          # Install dependencies
+          - script: |
+              pip install poetry
+              poetry self add poetry-plugin-export
+              poetry install
+            displayName: "Install dependencies"
+          - script: |
+              poetry export -o requirements.txt
+            displayName: "Export python dependencies"
+
+            ## Initialize CodeQL database
+          - task: AdvancedSecurity-Codeql-Init@1
+            inputs:
+              languages: python
+              querysuite: security-extended
+
+          ## Attemps to build the project
+          - task: AdvancedSecurity-Codeql-Autobuild@1
+
+          ## Perform vulnerability scanning
+          - task: AdvancedSecurity-Dependency-Scanning@1
+
+          ## Perform code scanning
+          - task: AdvancedSecurity-Codeql-Analyze@1
+
+          ## Publish the analysis result
+          - task: AdvancedSecurity-Publish@1

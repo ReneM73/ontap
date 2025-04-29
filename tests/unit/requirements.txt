@@ -1,0 +1,9 @@
+# requirement for kpi_insert module
+# pymssql==1.0.3 ; python_version <= '2.7'
+# pymssql==2.1.5 ; python_version == '3.5'
+# pymssql; python_version >= '3.6'
+
+unittest2 ; python_version < '2.7'
+importlib ; python_version < '2.7'
+dateutils
+cvpysdk

@@ -1,0 +1,18 @@
+---
+- name: Execute NA_ONTAP_SNAPMIRROR
+  delegate_to: localhost
+  netapp.ontap.na_ontap_snapmirror:
+    # Login information
+    hostname: "{{ destination_hostname }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    state: "{{ state | default('present') }}"
+    source_endpoint:
+      path: "{{ source_path | default(omit) }}"
+    destination_endpoint:
+      path: "{{ destination_path | default(omit) }}"
+    # Optional fields
+    source_hostname: "{{ source_hostname | default(omit) }}"

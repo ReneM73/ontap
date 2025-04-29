@@ -1,0 +1,9 @@
+dist/
+tests/output/
+tests/integration/integration_config.yml
+tests/integration/inventory
+plugins/modules/requirements.yml
+**__pycache__**
+.mypy_cache/
+.ruff_cache/
+.ansible

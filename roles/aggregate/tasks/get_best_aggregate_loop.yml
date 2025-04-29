@@ -1,0 +1,13 @@
+---
+- name: Set variable names
+  ansible.builtin.set_fact:
+    aggregate_available: "{{ item.space.block_storage.available }}"
+    aggregate_volcount: "{{ item.volume_count }}"
+
+- name: Calculating Aggregate Rating
+  ansible.builtin.set_fact:
+    aggregate_rating: "{{ aggregate_available | int * (1 / (aggregate_volcount | int + 1)) }}"
+
+- name: Create Rating Table
+  ansible.builtin.set_fact:
+    aggregate_rating_table: "{{ aggregate_rating_table | default([]) + [{'name': item.name, 'rating': aggregate_rating | float}] }}"

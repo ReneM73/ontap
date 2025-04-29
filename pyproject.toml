@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "sgs-ontap"
+version = "1.0.0"
+description = "Netapp Ontap Ansible collection for Swatch Group Services"
+authors = ["Bastien Lalos <LalosB@swatchgroup.net>"]
+readme = "README.md"
+packages = [{include = "plugins"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+black = "^24.3.0"
+ansible = "*"
+ansible-lint = { version = "*", markers = "platform_system != 'Windows'" }
+isort = "^5.13.2"
+coverage = "7.3.2"
+requests = "^2.31.0"
+dateutils = "^0.6.12"
+nox = "^2024.3.2"
+idna = "^3.7"
+jinja2 = "^3.1.4"
+cvpysdk = "^11.36"
+ruff = "^0.11.2"
+mock = "^5.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

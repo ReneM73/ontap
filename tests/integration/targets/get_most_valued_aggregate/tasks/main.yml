@@ -1,0 +1,7 @@
+---
+- name: Get most valued aggregate
+  sgs.ontap.get_most_valued_aggregate:
+    cluster_list: "cluster1"
+    username: admin
+    password: password
+  register: result

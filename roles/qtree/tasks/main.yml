@@ -1,0 +1,19 @@
+---
+- name: Execute ONTAP_IGROUP
+  delegate_to: localhost
+  netapp.ontap.na_ontap_qtree:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    state: "{{ state | default('present') }}"
+    vserver: "{{ vserver }}"
+    name: "{{ name }}"
+    flexvol_name: "{{ flexvol_name }}"
+    # Optional fields
+    security_style: "{{ security_style | default(omit) }}"
+    unix_permissions: "{{ unix_permissions | default(omit) }}"
+    wait_for_completion: "{{ wait_for_completion | default('true') }}"

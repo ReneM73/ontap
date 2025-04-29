@@ -1,0 +1,17 @@
+---
+- name: Execute NA_ONTAP_LUN_MAP
+  delegate_to: localhost
+  netapp.ontap.na_ontap_lun_map:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    state: "{{ state | default('present') }}"
+    initiator_group_name: "{{ initiator_group_name }}"
+    path: "{{ path }}"
+    vserver: "{{ vserver }}"
+    # Optional fields
+    lun_id: "{{ lun_id | default(omit) }}"

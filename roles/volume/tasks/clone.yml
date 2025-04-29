@@ -1,0 +1,16 @@
+---
+- name: Execute NA_ONTAP_VOLUME_CLONE
+  delegate_to: localhost
+  netapp.ontap.na_ontap_volume_clone:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    name: "{{ name }}"
+    vserver: "{{ vserver }}"
+    parent_volume: "{{ parent_volume }}"
+    # Optional fields
+    parent_snapshot: "{{ parent_snapshot | default(omit) }}"

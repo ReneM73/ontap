@@ -1,0 +1,32 @@
+---
+- name: Execute NA_ONTAP_VOLUME
+  delegate_to: localhost
+  netapp.ontap.na_ontap_volume:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    state: "{{ state | default('present') }}"
+    name: "{{ name }}"
+    vserver: "{{ vserver }}"
+    # Optional fields
+    aggregate_name: "{{ aggregate_name | default(omit) }}"
+    atime_update: "{{ atime_update | default(omit) }}"
+    comment: "{{ comment | default(omit) }}"
+    export_policy: "{{ export_policy | default(omit) }}"
+    from_name: "{{ from_name | default(omit) }}"
+    force_unmap_luns: "{{ force_unmap_luns | default(omit) }}"
+    language: "{{ language | default(omit) }}"
+    junction_path: "{{ junction_path | default(omit) }}"
+    percent_snapshot_space: "{{ percent_snapshot_space | default(omit) }}"
+    size: "{{ size | default(omit) }}"
+    size_unit: "{{ size_unit | default('gb') }}"
+    snapdir_access: "{{ snapdir_access | default(omit) }}"
+    snapshot_policy: "{{ snapshot_policy | default(omit) }}"
+    space_guarantee: "{{ space_guarantee | default(omit) }}"
+    unix_permissions: "{{ unix_permissions | default(omit) }}"
+    volume_security_style: "{{ volume_security_style | default(omit) }}"
+    wait_for_completion: "{{ wait_for_completion | default('true') }}"
