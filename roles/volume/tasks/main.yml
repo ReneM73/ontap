@@ -7,7 +7,7 @@
     username: "{{ netapp_username }}"
     password: "{{ netapp_password }}"
     https: true
-    validate_certs: false
+    validate_certs: "{{ validate_certs }}"
     # Required fieleds
     state: "{{ state | default('present') }}"
     name: "{{ name }}"
