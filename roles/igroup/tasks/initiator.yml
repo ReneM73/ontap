@@ -1,0 +1,16 @@
+---
+- name: Execute ONTAP_IGROUP_INITIATOR
+  delegate_to: localhost
+  netapp.ontap.na_ontap_igroup_initiator:
+    # Login information
+    hostname: "{{ cluster_name }}"
+    username: "{{ netapp_username }}"
+    password: "{{ netapp_password }}"
+    https: true
+    validate_certs: "{{ validate_certs }}"
+    # Required fieleds
+    initiator_group: "{{ initiator_group }}"
+    vserver: "{{ vserver }}"
+    names: "{{ names }}"
+    # Optional fields
+    force_remove: "{{ force_remove  | default(false) }}"
