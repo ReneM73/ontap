@@ -1,5 +1,5 @@
 ---
-- name: Execute ONTAP_IGROUP
+- name: Execute ONTAP_QTREE
   delegate_to: localhost
   netapp.ontap.na_ontap_qtree:
     # Login information
