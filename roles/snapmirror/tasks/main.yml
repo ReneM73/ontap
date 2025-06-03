@@ -16,3 +16,4 @@
       path: "{{ destination_path | default(omit) }}"
     # Optional fields
     source_hostname: "{{ source_hostname | default(omit) }}"
+    relationship_state: "{{ relationship_state | default(omit) }}"
