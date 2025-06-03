@@ -17,3 +17,5 @@
     # Optional fields
     source_hostname: "{{ source_hostname | default(omit) }}"
     relationship_state: "{{ relationship_state | default(omit) }}"
+    policy: "{{ policy | default(omit) }}"
+    schedule: "{{ schedule | default(omit) }}"
