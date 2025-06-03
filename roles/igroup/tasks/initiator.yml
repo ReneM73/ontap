@@ -14,3 +14,4 @@
     names: "{{ names }}"
     # Optional fields
     force_remove: "{{ force_remove  | default(false) }}"
+    state: "{{ state | default('present') }}"
